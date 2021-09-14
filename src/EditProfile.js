@@ -24,12 +24,19 @@ const useStyles=makeStyles((theme)=> ({
     grow: {
       flexGrow: 1,
     },
-    root: {
+/*     root: {
       "& > *": {
+      display:"flex",
       margin: theme.spacing(1),
-      width: "100%"
+      width: "100%",
+      align: 'center',
       } 
     },
+ */   root: {
+      "& .MuiTextField-root": {
+        margin: theme.spacing(1),
+        width: "25ch"
+      }},  
     roots:{
         display:"flex",
         marginLeft: theme.spacing(4),
@@ -67,7 +74,7 @@ const useStyles=makeStyles((theme)=> ({
         width:"100%"
       },
       formControl: {
-        margin: theme.spacing(1),
+        margin: theme.spacing(0),
         minWidth: 120,
       },
       selectEmpty: {
@@ -84,26 +91,25 @@ function Profile() {
     };
 
     //const user_id="106054907602357766738";
-    const user_id = JSON.parse(window.localStorage.getItem('profile')).user_id;
+    const user_id = JSON.parse(window.localStorage.getItem('profile')).Id;
+    console.log(user_id)
     
     //const [id, setid] = useState(2)
     const [data, setData] = useState([])
   
   useEffect(()=>{
-  //fetch(`http://localhost:5050/users/${JSON.parse(localStorage.getItem('profile')).user._id}`)
+  //fetch(`http://localhost:5050/users/${JSON.parse(localStorage.getItem('profile')).user_id}`)
    fetch(`http://localhost:5050/users/${user_id}`)
    .then(res=>res.json())
-   .then(data=>{
-     setData(data)
-     console.log(data)
-     //console.log(data.length)
-   })
+   .then(res=>{
+     setData(res)
+     console.log(res)
+    })
 },[])
 
-
-    var token = JSON.parse(window.localStorage.getItem('profile')).token
+var token = JSON.parse(window.localStorage.getItem('profile')).token
     console.log(token)
-    var title, body, tags;
+    var title, body, tags, gender;
     const setTitle = (e)=>{
         title=e.target.value
         console.log(title)
@@ -113,26 +119,34 @@ function Profile() {
         console.log(body)
     }
     const setTag = (e)=>{
-        tags=e.target.value
-        console.log(tags)
-    }
-    
-    const handleSubmit = (e)=>{
-        fetch('http://localhost:8089/questions/add',{
-            method:'POST',
+      tags=e.target.value
+      console.log(tags)
+  }    
+  const setGender = (e)=>{
+    gender=e.target.value
+    console.log(gender)
+}    
+const handleSubmit = (e)=>{
+        fetch(`http://localhost:5050/users/${user_id}/editprofile`,{
+            method:'PATCH',
             headers:{"Content-type":"application/json",
                      "x-access-token":token},
-            body:JSON.stringify({"Title":title,
-                                  "Body":body,
-                                  "Tags":tags})
+            body:JSON.stringify({"displayName":title,
+                                  "username":body,
+                                  "SocialLink":tags,
+                                  "gender":gender})
             })
             .then(res=>(res.json()))   
             .then(data=>{
                 console.log(data)
             })
             .then(()=>
-            alert("Question Posted")) 
+            alert("User Profile Edited Successfully")) 
     }
+    const [age, setAge] = React.useState("");
+    const handleChanges= (event) => {
+      setAge(event.target.value);
+    };
 
     return (
         <>
@@ -150,9 +164,7 @@ function Profile() {
                 <a href={data.SocialLink} style={{ textDecoration: 'None' }}>
                     Social Link: <b>{data.SocialLink}</b>
                 </a><br></br>
-
             </Box>
-
 <div>
 <div className={classes.roots}>
       <Grid container spacing={4}>
@@ -186,47 +198,72 @@ function Profile() {
         <Grid container spacing={1}>
         <Grid item xs={12}>
         <Paper className={classes.paper}>
-        <form action="" name = "questionForm" className ={classes.root}>
+                      <div>
+            <Typography gutterBottom variant="h5" component="h6" color ="#000">
                 <b>Edit Profile:</b>
+            </Typography>
             <Box>
             <Typography gutterBottom variant="h6" component="h6" color ="#000">
                 Public Information:
             </Typography>
             </Box>
+            </div>
+        
+        <form action="" name = "form" className ={classes.roots}>
             <div>
               <Typography gutterBottom variant="h6" component="h5" color ="#000">
                 Display Name:
               </Typography>
-              <TextField id="outlined-basic" label="Display Name" width="100%" variant="outlined"  onChange={setTitle}/>
+              <TextField id="outlined-search" label="Display Name" type="search" variant="outlined" defaultValue={JSON.parse(window.localStorage.getItem('profile')).displayName} onChange={setTitle}/>
               </div>
               <div>
               <Typography gutterBottom variant="h6" component="h5" color ="#000">
                 User Name:
               </Typography>
-              <TextField variant="extended" id="outlined-basic" label="User Name/ Email" width="200%" variant="outlined"  onChange={setTitle}/>
+              <TextField id="outlined-search" label="User Name/ Email" type="search" variant="outlined" defaultValue={JSON.parse(window.localStorage.getItem('profile')).username} onChange={setBody}/>
               </div>
               <div>
               <Typography gutterBottom variant="h6" component="h5" color ="#000">
                 Social Link:
               </Typography>
-              <TextField variant="extended" id="outlined-basic" label="Social Link" width="200%" variant="outlined"  onChange={setTitle}/>
+              <TextField id="outlined-search" label="Social Link" type="search" variant="outlined" defaultValue={JSON.parse(window.localStorage.getItem('profile')).SocialLink} onChange={setTag}/>
               </div>
+              <div>
+              <Typography gutterBottom variant="h6" component="h5" color ="#000" onChange={setGender}>
+                Gender:
+              </Typography>
+
+        <FormControl variant="outlined" className={classes.formControl}>
+        <InputLabel id="demo-simple-select-outlined-label">Gender</InputLabel>
+        <Select
+          labelId="demo-simple-select-outlined-label"
+          id="demo-simple-select-outlined"
+          value={age}
+          onChange={handleChanges}
+          label="Gender"
+        >
+          <MenuItem value="">
+          </MenuItem>
+          <MenuItem value={10}>Male</MenuItem>
+          <MenuItem value={20}>Female</MenuItem>
+          <MenuItem value={30}>None</MenuItem>
+        </Select>
+      </FormControl>
+              {/* </div>
               <Typography gutterBottom variant="h6" component="h5" color ="#000">
                 About you:
               </Typography>
             <TextareaAutosize id="outlined-basic" aria-label="minimum height" width="95%" minRows={10} placeholder = "Write something about you!"  onChange={setBody} />
-            <div>
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
+            <div> */}
+            </div>
+        </form><br/>
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
                 Submit
             </Button>
-            </div>
-        </form>
         </Paper>
         </Grid>
         </Grid>
         </div>
-
-
         </>
       
     )

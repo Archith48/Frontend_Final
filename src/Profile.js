@@ -145,7 +145,7 @@ function Profile() {
     };
 
     //const user_id="106054907602357766738";
-    const user_id = JSON.parse(window.localStorage.getItem('profile')).user_id;
+    const user_id = JSON.parse(window.localStorage.getItem('profile')).Id;
     
     //const [id, setid] = useState(2)
     const [data, setData] = useState([])
@@ -154,10 +154,9 @@ function Profile() {
   //fetch(`http://localhost:5050/users/${JSON.parse(localStorage.getItem('profile')).user._id}`)
    fetch(`http://localhost:5050/users/${user_id}`)
    .then(res=>res.json())
-   .then(data=>{
-     setData(data)
-     console.log(data)
-     //console.log(data.length)
+   .then(res=>{
+     setData(res)
+     //localStorage.setItem("user", JSON.stringify(res))     //console.log(data.length)
    })
 },[])
 
