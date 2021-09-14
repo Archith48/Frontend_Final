@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { IconButton, makeStyles } from "@material-ui/core";
 import React from "react";
 import { useState, useEffect} from "react";
 import { Typography } from "@material-ui/core";
@@ -12,9 +12,14 @@ import { Paper } from "@material-ui/core";
 import { TextField } from "@material-ui/core";
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import LockIcon from '@material-ui/icons/Lock';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
 import NavBar from "./NavBar";
 import Header1 from "./Header1";
 import GetComments from "./GetComments";
+import Lock from "@material-ui/icons/Lock";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,10 +51,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-var answerToPost, commentToPost, p_id;
-var token = JSON.parse(window.localStorage.getItem('profile')).accessToken
-console.log(token)
-
 function ListItemLink(props) {
     return <ListItem button component="a" {...props} />;
 }
@@ -73,6 +74,9 @@ function Votting(props) {
 }
 
 function Question(){
+    var answerToPost, commentToPost, p_id;
+    var token = JSON.parse(window.localStorage.getItem('profile')).accessToken
+    var user_id = JSON.parse(window.localStorage.getItem('profile')).user_id
     const classes=useStyles()
 
     const postAnswer = (e)=>{
@@ -92,7 +96,7 @@ function Question(){
             .then(()=>alert("Answer Posted"))
     }
 
-    const handleKeyDown=(e)=>{
+    const handleComment=(e)=>{
         if(e.key==="Enter"){
             p_id = Number(e.target.attributes.name.nodeValue)
             commentToPost=e.target.value
@@ -112,6 +116,22 @@ function Question(){
             }
         }
     }
+
+    const handleEditQuestion=(e)=>{}
+
+    const handleDeleteQuestion=(e)=>{}
+
+    const handleCloseQuestion=(e)=>{}
+
+    const handleReopenQuestion=(e)=>{}
+
+    const handleEditAnswer=(e)=>{}
+
+    const handleDeleteAnswer=(e)=>{}
+
+    const handleEditComment=(e)=>{}
+
+    const handleDeleteComment=(e)=>{}
 
     var questions
     const [similarQ,setSimilarQ]=useState([]);
@@ -162,6 +182,26 @@ function Question(){
                     <Grid item xs={11}>
                     <Paper className={classes.paper}>
                         <Typography variant="body1" gutterBottom>{question.Body}</Typography>
+                        {user_id==question.OwnerUserId && 
+                        (
+                            <div>
+                            <IconButton onClick={handleEditQuestion}>
+                                <EditIcon fontSize="small"/>
+                            </IconButton>
+                            <IconButton onClick={handleDeleteQuestion}>
+                                <DeleteIcon fontSize="small"/>
+                            </IconButton>
+                            {question.ClosedDate==null ? (
+                                <IconButton onClick={handleCloseQuestion}> 
+                                    <Lock fontSize="small"/>
+                                </IconButton>
+                            ):(
+                                <IconButton onClick={handleReopenQuestion}>
+                                    <LockOpenIcon fontSize="small"/>
+                                </IconButton>
+                            )}
+                            </div>
+                        )}
                     </Paper>
                     </Grid>
 
@@ -170,7 +210,7 @@ function Question(){
                         <Grid container spacing={1}>
                         <Grid item xs={12}>
                         <GetComments id = {q_id} />
-                        <TextField id="standard" name={q_id} label="Add Comment" fullWidth onKeyPress={handleKeyDown}/>
+                        <TextField id="standard" name={q_id} label="Add Comment" fullWidth onKeyPress={handleComment}/>
                         </Grid>
                     </Grid>
                     </Grid>
@@ -194,7 +234,7 @@ function Question(){
                             <Grid container spacing={1}>
                             <Grid item xs={12}>
                             <GetComments id = {answerText.Id} />
-                            <TextField id="standard" name={answerText.Id} label="Add Comment" fullWidth onKeyPress={handleKeyDown}/>
+                            <TextField id="standard" name={answerText.Id} label="Add Comment" fullWidth onKeyPress={handleComment}/>
                             </Grid>
                         </Grid>
                         </Grid>
