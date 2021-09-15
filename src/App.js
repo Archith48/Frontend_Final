@@ -13,6 +13,7 @@ import Users from './Users';
 import Profile from './Profile';
 import EditProfile from './EditProfile';
 import Login from './Login';
+import UserProfile from './UserProfile';
 import Server from './Server';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route exact path="/profile" component={Profile}/> 
         <Route exact path="/profile/edit" component={EditProfile}/> 
         <Route exact path="/users" component={Users}/>
+        <Route exact path="/users/:user_id" component={UserProfile}/>
         <Route exact path="/askquestion" component={AskQuestion}/>
         <Route exact path="/searchpost/:search_string" component={SearchPost}/>
         <Route exact path="/searchTags/:tag" component={SearchTag}/>
