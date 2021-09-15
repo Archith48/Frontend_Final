@@ -126,7 +126,7 @@ function Profile() {
     //const user_id="106054907602357766738";
     var url = window.location.pathname
     var user_id = url.split('/')[2]
-    if (JSON.parse(window.localStorage.getItem('profile')).Id){
+    if (JSON.parse(window.localStorage.getItem('profile'))){
     if (user_id === JSON.parse(window.localStorage.getItem('profile')).Id)
     {
         window.location.href = "http://localhost:3000/profile";
