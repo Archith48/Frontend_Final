@@ -10,8 +10,17 @@ import { TextareaAutosize } from "@material-ui/core";
 import { Button } from '@material-ui/core';
 import { Paper } from "@material-ui/core";
 import { TextField } from "@material-ui/core";
+import { IconButton } from '@material-ui/core';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import LockIcon from '@material-ui/icons/Lock';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import NavBar from "./NavBar";
 import Header1 from "./Header1";
 import GetComments from "./GetComments";
@@ -46,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-var answerToPost, commentToPost, p_id;
 if(localStorage.getItem('profile')){
     var token = JSON.parse(window.localStorage.getItem('profile')).accessToken
     console.log(token)
@@ -75,12 +83,35 @@ function Votting(props) {
 }
 
 function Question(){
+
+    var answerToPost, commentToPost, p_id;
+    if(window.localStorage.getItem('profile')!=null){
+        var token = JSON.parse(window.localStorage.getItem('profile')).accessToken
+        console.log(token)
+        var user_id = JSON.parse(window.localStorage.getItem('profile')).user_id
+    }
+
     const classes=useStyles()
 
-    const postAnswer = (e)=>{
-        answerToPost=e.target.value
-        console.log(answerToPost)
+    const [openEditQuestion, setOpenEditQuestion] = React.useState(false);
+    const [openEditAnswer, setOpenEditAnswer] = React.useState(false);
+
+    var title, body, tags;
+    const setTitle = (e)=>{title=e.target.value}
+    const setBody = (e)=>{body=e.target.value}
+    const setTag = (e)=>{
+        tags=e.target.value
+        tags = tags.split(',')
     }
+    const postAnswer = (e)=>{
+        p_id = Number(e.target.attributes.name.nodeValue)
+        answerToPost=e.target.value
+    }
+
+    const handleClickOpenEditQuestion = () => {setOpenEditQuestion(true);};
+    const handleCloseEditQuestion = () => {setOpenEditQuestion(false);};
+    const handleClickOpenEditAnswer = () => {setOpenEditAnswer(true);};
+    const handleCloseEditAnswer = () => {setOpenEditAnswer(false);};
 
     const handleAnswer=(e)=>{
             fetch(`http://localhost:8089/questions/${q_id}/answers/add`,{
@@ -89,8 +120,7 @@ function Question(){
                         "x-access-token":token},
                 body:JSON.stringify({"Body":answerToPost,})
             })
-            .then(res=>(res.json()))      
-            .then(data=>{console.log(data)})
+            .then(res=>(res.json()))
             .then(()=>alert("Answer Posted"))
     }
 
@@ -106,14 +136,56 @@ function Question(){
                     "x-access-token":token},
                 body: JSON.stringify({"body":commentToPost})
                 })
-                .then(res=>(res.json()))   
-                .then(data=>{
-                    console.log(data)
-                })
+                .then(res=>(res.json()))
                 .then(()=>alert("Comment Posted"))
             }
         }
     }
+
+    const EditQuestion = (e) => {
+        fetch(`http://localhost:8089/questions/${q_id}/edit`,{
+        method:'POST',
+        headers:{"Content-type":"application/json",
+                 "x-access-token":token},
+        body:JSON.stringify({"Title":title,"Body":body,"Tags":tags})
+        })
+        .then(res=>(res.json()))
+        .then(()=>alert("Question Edited"))
+    };
+
+    const EditAnswer=(e)=>{
+        fetch(`http://localhost:8088/answers/${p_id}/edit`,{
+        method:'POST',
+        headers:{"Content-type":"application/json",
+                 "x-access-token":token},
+        body:JSON.stringify({"Body":answerToPost})
+        })
+        .then(res=>(res.json()))
+        .then(()=>alert("Answer Edited"))
+    }
+
+    const handleDeleteQuestion=(e)=>{
+        fetch(`http://localhost:8089/questions/${q_id}/delete`,{
+            method:'POST',
+            headers:{"Content-type":"application/json","x-access-token":token}
+        })
+    }
+
+    const handleCloseQuestion=(e)=>{
+        fetch(`http://localhost:8089/questions/${q_id}/close`,{
+            method:'POST',
+            headers:{"Content-type":"application/json","x-access-token":token}
+        })
+    }
+
+    const handleReopenQuestion=(e)=>{
+        fetch(`http://localhost:8089/questions/${q_id}/reopen`,{
+            method:'POST',
+            headers:{"Content-type":"application/json","x-access-token":token}
+        })
+    }
+
+    const handleDeleteAnswer=(e)=>{}
 
     var questions
     const [similarQ,setSimilarQ]=useState([]);
@@ -164,6 +236,47 @@ function Question(){
                     <Grid item xs={11}>
                     <Paper className={classes.paper}>
                         <Typography variant="body1" gutterBottom>{question.Body}</Typography>
+                        {user_id==question.OwnerUserId && 
+                        (
+                            <div>
+                            <IconButton onClick={handleClickOpenEditQuestion}>
+                                <EditIcon fontSize="small"/>
+                            </IconButton>
+                                <Dialog
+                                    open={openEditQuestion}
+                                    onClose={handleCloseEditQuestion}
+                                    aria-labelledby="form-dialog-title"
+                                    fullWidth
+                                >
+                                    <DialogTitle id="form-dialog-title">Edit Question</DialogTitle>
+                                    <DialogContent>
+                                    <TextField id="outlined-basic" required margin="dense" label="Title" defaultValue={question.Title} type="text" fullWidth onChange={setTitle}/>
+                                    <TextField id="outlined-basic" required margin="dense" label="Body" defaultValue={question.Body} type="text" fullWidth onChange={setBody}/>
+                                    <TextField id="outlined-basic" required margin="dense" label="Tags" defaultValue={question.Tags} type="text" fullWidth onChange={setTag}/>
+                                    </DialogContent>
+                                    <DialogActions>
+                                    <Button onClick={handleCloseEditQuestion} name={q_id} color="primary">
+                                        Cancel
+                                    </Button>
+                                    <Button onClick={EditQuestion} color="primary">
+                                        Edit
+                                    </Button>
+                                    </DialogActions>
+                                </Dialog>
+                            <IconButton onClick={handleDeleteQuestion}>
+                                <DeleteIcon fontSize="small"/>
+                            </IconButton>
+                            {question.ClosedDate==null ? (
+                                <IconButton onClick={handleCloseQuestion}> 
+                                    <LockOpenIcon fontSize="small"/>
+                                </IconButton>
+                            ):(
+                                <IconButton onClick={handleReopenQuestion}>
+                                    <LockIcon fontSize="small"/>
+                                </IconButton>
+                            )}
+                            </div>
+                        )}
                     </Paper>
                     </Grid>
 
@@ -188,6 +301,35 @@ function Question(){
                         <Grid item xs={11}>
                         <Paper className={classes.paper}>
                             <Typography variant="body1" gutterBottom>{answerText.Body}</Typography>
+                            {user_id==answerText.OwnerUserId && (
+                                <div>
+                                <IconButton onClick={handleClickOpenEditAnswer}>
+                                    <EditIcon fontSize="small"/>
+                                </IconButton>
+                                    <Dialog
+                                        open={openEditAnswer}
+                                        onClose={handleCloseEditAnswer}
+                                        aria-labelledby="form-dialog-title"
+                                        fullWidth
+                                    >
+                                        <DialogTitle id="form-dialog-title">Edit Answer</DialogTitle>
+                                        <DialogContent>
+                                        <TextField id="outlined-basic" name={answerText.Id} required margin="dense" label="Answer" defaultValue={answerText.Body} type="text" fullWidth onChange={postAnswer}/>
+                                        </DialogContent>
+                                        <DialogActions>
+                                        <Button onClick={handleCloseEditAnswer} color="primary">
+                                            Cancel
+                                        </Button>
+                                        <Button onClick={EditAnswer} color="primary">
+                                            Edit
+                                        </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                <IconButton onClick={handleDeleteQuestion}>
+                                    <DeleteIcon fontSize="small"/>
+                                </IconButton>
+                                </div>
+                            )}
                         </Paper>
                         </Grid>
     
@@ -209,7 +351,7 @@ function Question(){
                 <Typography variant="body2" color="textSecondary" component="p">
                     Include all the information someone would need to understand your solution
                 </Typography>
-            <TextareaAutosize id="outlined-basic" aria-label="minimum height" placeholder = "Enter Detail Description of your Answer here" onChange={postAnswer}/>
+                <TextareaAutosize id="outlined-basic" style={{width:"100%"}} minRows={10} aria-label="minimum height" placeholder = "Enter Detail Description of your Answer here" onChange={postAnswer}/>
             <br />
             <Button variant="contained" color="primary" onClick={handleAnswer}>
                 Post Answer
@@ -226,7 +368,7 @@ function Question(){
                     {similarQ.map((text) => (
                     <Box>
                     <Typography gutterBottom variant="h6" component="h4" color ="#000">
-                          <ListItemLink href="/question">
+                          <ListItemLink href={"/question/"+text.Id}>
                             <ListItemText primary={text.Title}/>
                           </ListItemLink>
                     </Typography>
