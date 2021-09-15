@@ -10,10 +10,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
+import { Redirect } from "react-router-dom"
 
-import Fab from '@material-ui/core/Fab';
-import EditIcon from '@material-ui/icons/Edit';
-import SettingsIcon from '@material-ui/icons/Settings';
 import NavBar from './NavBar';
 
 const useStyles=makeStyles((theme)=> ({
@@ -128,7 +126,10 @@ function Profile() {
     //const user_id="106054907602357766738";
     var url = window.location.pathname
     var user_id = url.split('/')[2]
-    
+    if (user_id === JSON.parse(window.localStorage.getItem('profile')).Id)
+    {
+        window.location.href = "http://localhost:3000/profile";
+    }  
     //const [id, setid] = useState(2)
     const [data, setData] = useState([])
   
