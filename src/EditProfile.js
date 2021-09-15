@@ -154,9 +154,6 @@ const handleChange3= (event) => {
 const handleChange4= (event) => {
   setGender(event.target.value);
 };
-function timeout(delay, number) {
-  return new Promise( res => setTimeout(res, delay) );
-}
 
 const handleSubmit = (e)=>{
   axios({
@@ -164,16 +161,16 @@ const handleSubmit = (e)=>{
     url: `http://localhost:5050/users/${user_id}/editprofile`,
     headers: {'x-access-token': String(token)},
     data: {
-      "displayName":title,
-      "username":body,
-      "SocialLink":tag,
-      "gender":gender
+      "displayName":(title==='')?data.displayName:title,
+      "username":(body==='')?data.username:body,
+      "SocialLink":(tag==='')?data.SocialLink:tag,
+      "gender":(gender==='')?data.gender:gender
     }  
   })
   .then(function (response) {
     console.log(response)
   });
-  setTimeout(function(){window.location.reload()}, 3000);
+  setTimeout(function(){window.location.reload()}, 1000);
   //window.location.reload()
 }
 
@@ -243,19 +240,19 @@ const handleSubmit = (e)=>{
               <Typography gutterBottom variant="h6" component="h5" color ="#000">
                 Display Name:
               </Typography>
-              <TextField id="outlined-search" label="Display Name" type="search" variant="outlined" defaultValue={data.displayName} onChange={handleChange1}/>
+              <TextField id="outlined-search" label="Display Name" type="search" variant="outlined" defaultValue='Display Name' onChange={handleChange1}/>
               </div>
               <div>
               <Typography gutterBottom variant="h6" component="h5" color ="#000">
                 User Name:
               </Typography>
-              <TextField id="outlined-search" label="User Name/ Email" type="search" variant="outlined" defaultValue={data.username} onChange={handleChange2}/>
+              <TextField id="outlined-search" label="User Name/ Email" type="search" variant="outlined" defaultValue='User Name' onChange={handleChange2}/>
               </div>
               <div>
               <Typography gutterBottom variant="h6" component="h5" color ="#000">
                 Social Link:
               </Typography>
-              <TextField id="outlined-search" label="Social Link" type="search" variant="outlined" defaultValue={data.SocialLink} onChange={handleChange3}/>
+              <TextField id="outlined-search" label="Social Link" type="search" variant="outlined" defaultValue='Social Link' onChange={handleChange3}/>
               </div>
               <div>
               <Typography gutterBottom variant="h6" component="h5" color ="#000" onChange={setGender}>
