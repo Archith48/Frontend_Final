@@ -154,12 +154,15 @@ const handleChange3= (event) => {
 const handleChange4= (event) => {
   setGender(event.target.value);
 };
+function timeout(delay, number) {
+  return new Promise( res => setTimeout(res, delay) );
+}
 
 const handleSubmit = (e)=>{
   axios({
     method: 'patch',
     url: `http://localhost:5050/users/${user_id}/editprofile`,
-    //headers: {'x-access-token': token},
+    headers: {'x-access-token': String(token)},
     data: {
       "displayName":title,
       "username":body,
@@ -170,7 +173,8 @@ const handleSubmit = (e)=>{
   .then(function (response) {
     console.log(response)
   });
-  window.location.reload()
+  setTimeout(function(){window.location.reload()}, 3000);
+  //window.location.reload()
 }
 
     return (

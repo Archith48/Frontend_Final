@@ -292,9 +292,9 @@ useEffect(()=>{
               disableSelectionOnClick
               onCellDoubleClick={(GridCellParams, event) => {
                 if (event) {
-                  alert('GridCellParams.tabIndex : ' + JSON.stringify(GridCellParams.tabIndex));
+                  //alert('GridCellParams.tabIndex : ' + JSON.stringify(GridCellParams.tabIndex));
                   console.log(JSON.stringify(GridCellParams.tabIndex));
-                  //window.location.href =  `/questions/${GridCellParams.id}`;
+                  window.location.href =  `/question/${GridCellParams.id}`;
                 }
               } } />
           </div>
@@ -309,7 +309,7 @@ useEffect(()=>{
               disableSelectionOnClick
               onCellDoubleClick={(GridCellParams, event) => {
                 if (event) {
-                  alert('GridCellParams.tabIndex : ' + JSON.stringify(GridCellParams.tabIndex));
+                  //alert('GridCellParams.tabIndex : ' + JSON.stringify(GridCellParams.tabIndex));
                   console.log(JSON.stringify(GridCellParams.tabIndex));
                   //window.location.href =  `/questions/${GridCellParams.id}`;
                 }
@@ -326,9 +326,9 @@ useEffect(()=>{
               disableSelectionOnClick
               onCellDoubleClick={(GridCellParams, event) => {
                 if (event) {
-                  alert('GridCellParams.tabIndex : ' + JSON.stringify(GridCellParams.tabIndex));
+                  //alert('GridCellParams.tabIndex : ' + JSON.stringify(GridCellParams.tabIndex));
                   console.log(JSON.stringify(GridCellParams.tabIndex));
-                  //window.location.href =  `/questions/${GridCellParams.id}`;
+                  //window.location.href = `/question/${GridCellParams.id}`;
                 }
               } } />
           </div>

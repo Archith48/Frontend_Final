@@ -26,7 +26,7 @@ const columns = [
       editable: true,
     },
     {
-      field: 'creationDate',
+      field: 'CreationDate',
       headerName: 'Joined On',
       width: 145,
       editable: true,
@@ -168,13 +168,41 @@ function Users()
 
     const [data, setData] = useState([])
   
-     useEffect(()=>{
+    useEffect(()=>{
       fetch("http://localhost:5050/users")
       .then(res=>res.json())
       .then(resp=>{
+        //setData(resp)
+        console.log(resp)
+        for (let i = 0; i < resp.length; i++)
+        {
+          //console.log(resp[i].Id)
+          fetch(`http://localhost:5050/users/${resp[i].Id}/totalquestions`)
+          .then(res => res.json())
+          .then(response=>{
+            //console.log(response)
+            resp.[i].questions = JSON.stringify(response);
+          })
+
+          //console.log(resp[i].Id)
+          fetch(`http://localhost:5050/users/${resp[i].Id}/totalanswers`)
+          .then(res => res.json())
+          .then(response=>{
+            //console.log(response)
+            resp.[i].answers = JSON.stringify(response);
+          })
+
+          //console.log(resp[i].Id)
+          fetch(`http://localhost:5050/users/${resp[i].Id}/totalcomments`)
+          .then(res => res.json())
+          .then(response=>{
+            //console.log(response)
+            resp.[i].comments = JSON.stringify(response);
+          })
+
+        }
+        //console.log(resp)  
         setData(resp)
-        //console.log(resp)
-        //console.log(data.length)
       })
   },[])
   
@@ -200,9 +228,9 @@ function Users()
         disableSelectionOnClick
         onCellDoubleClick={(GridCellParams, event) => {
             if (event) {
-                alert('GridCellParams.tabIndex : '+JSON.stringify(GridCellParams.tabIndex))
+                //alert('GridCellParams.tabIndex : '+JSON.stringify(GridCellParams.tabIndex))
                 console.log(JSON.stringify(GridCellParams.tabIndex))
-                //window.location.href =  `/questions/${GridCellParams.id}`;
+                window.location.href =  `/users/${GridCellParams.id}`;
             }
           }}
       />
@@ -215,3 +243,16 @@ function Users()
     );
 }
 export default Users;
+/* 
+for (let i = 0; i < resp.length; i++) {
+  if (resp[i].Id){
+    console.log(resp[i].Id)
+    fetch(`http://localhost:5050/users/${user_id}/questions`)
+        .then(res => res.json())
+        console.log(res)
+}
+//setData(resp)
+//console.log(resp)
+//console.log(data.length)
+}
+ */
