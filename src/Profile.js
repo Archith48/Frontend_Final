@@ -24,7 +24,7 @@ const useStyles=makeStyles((theme)=> ({
         display:"flex",
         marginLeft: theme.spacing(4),
         marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(0),
+        marginBottom: theme.spacing(2),
         marginRight: theme.spacing(4),
         align: 'center',
     },
@@ -62,22 +62,16 @@ const useStyles=makeStyles((theme)=> ({
         maxWidth: 50,
         backgroundColor: theme.palette.background.paper
       },
-      paper1: {
+      paper: {
         padding: theme.spacing(1),
         textAlign: 'center',
         color: theme.palette.text.secondary,
       },
-      paper: {
-        padding: theme.spacing(2),
-        margin: 'auto',
-        maxWidth: 1500,
-    },
-
     
   
 }));
 const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
+    { field: 'Id', headerName: 'ID', width: 100 },
     {
       field: 'CreationDate',
       headerName: 'Posted On',
@@ -90,13 +84,13 @@ const columns = [
         width: 690,
         editable: true,
       },
-      {
+/*       {
         field: 'answers',
         headerName: 'Answers',
         width: 132,
         editable: true,
       },
-      {
+ */      {
         field: 'Score',
         headerName: 'Score',
         width: 120,
@@ -190,6 +184,38 @@ useEffect(()=>{
   })
 },[])
 
+const [totalquestions, setTotalquestions] = useState([])
+
+useEffect(()=>{
+  fetch(`http://localhost:5050/users/${user_id}/totalquestions`)
+  .then(res=>res.json())
+  .then(totalquestions=>{setTotalquestions(totalquestions)
+      console.log(totalquestions)
+  })
+},[])
+
+const [totalanswers, setTotalanswers] = useState([])
+
+useEffect(()=>{
+  fetch(`http://localhost:5050/users/${user_id}/totalquestions`)
+  .then(res=>res.json())
+  .then(totalanswers=>{setTotalanswers(totalanswers)
+      console.log(totalanswers)
+  })
+},[])
+
+const [totalcomments, setTotalcomments] = useState([])
+
+useEffect(()=>{
+  fetch(`http://localhost:5050/users/${user_id}/totalquestions`)
+  .then(res=>res.json())
+  .then(totalcomments=>{setTotalcomments(totalcomments)
+      console.log(totalcomments)
+  })
+},[])
+
+
+
     return (
         <>
         <NavBar />
@@ -214,17 +240,17 @@ useEffect(()=>{
       <Grid container spacing={4}>
         <Grid item xs={5}>
           <Paper className={classes.paper}>
-            Questions<br></br>10
+            Questions<br></br>{totalquestions}
             </Paper>
         </Grid>
         <Grid item xs={5}>
           <Paper className={classes.paper}>
-          Answers<br></br>0
+          Answers<br></br>{totalanswers}
           </Paper>
         </Grid>
         <Grid item xs={5}>
           <Paper className={classes.paper}>
-          Comments<br></br>24
+          Comments<br></br>{totalcomments}
           </Paper>
         </Grid>
         <Grid item xs={5}>
@@ -237,7 +263,7 @@ useEffect(()=>{
     </div>
 
         <div className={classes.root1}>
-            <Fab variant="extended" color="textsecondary" aria-label="edit" className={classes.extendedIcon}>
+            <Fab variant="extended" color="textsecondary" aria-label="edit" className={classes.extendedIcon} href='/profile/edit'>
                 <EditIcon /> Edit Profile
             </Fab>
             <Fab variant="extended" color="textsecondary" aria-label="settings" className={classes.extendedIcon}>
