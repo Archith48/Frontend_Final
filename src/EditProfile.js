@@ -126,6 +126,36 @@ var token = JSON.parse(window.localStorage.getItem('profile')).token
     gender=e.target.value
     console.log(gender)
 }    
+const [totalquestions, setTotalquestions] = useState([])
+
+useEffect(()=>{
+  fetch(`http://localhost:5050/users/${user_id}/totalquestions`)
+  .then(res=>res.json())
+  .then(totalquestions=>{setTotalquestions(totalquestions)
+      console.log(totalquestions)
+  })
+},[])
+
+const [totalanswers, setTotalanswers] = useState([])
+
+useEffect(()=>{
+  fetch(`http://localhost:5050/users/${user_id}/totalquestions`)
+  .then(res=>res.json())
+  .then(totalanswers=>{setTotalanswers(totalanswers)
+      console.log(totalanswers)
+  })
+},[])
+
+const [totalcomments, setTotalcomments] = useState([])
+
+useEffect(()=>{
+  fetch(`http://localhost:5050/users/${user_id}/totalquestions`)
+  .then(res=>res.json())
+  .then(totalcomments=>{setTotalcomments(totalcomments)
+      console.log(totalcomments)
+  })
+},[])
+
 const handleSubmit = (e)=>{
         fetch(`http://localhost:5050/users/${user_id}/editprofile`,{
             method:'PATCH',
@@ -170,21 +200,21 @@ const handleSubmit = (e)=>{
       <Grid container spacing={4}>
         <Grid item xs={5}>
           <Paper className={classes.paper1}>
-            Questions<br></br>10
+          Questions<br></br>{totalquestions}
             </Paper>
         </Grid>
         <Grid item xs={5}>
-          <Paper className={classes.paper1}>
-          Answers<br></br>0
+          <Paper className={classes.paper}>
+          Answers<br></br>{totalanswers}
           </Paper>
         </Grid>
         <Grid item xs={5}>
-          <Paper className={classes.paper1}>
-          Comments<br></br>24
+          <Paper className={classes.paper}>
+          Comments<br></br>{totalcomments}
           </Paper>
         </Grid>
         <Grid item xs={5}>
-          <Paper className={classes.paper1}>
+          <Paper className={classes.paper}>
           Score<br></br>{data.grade}
           </Paper>
         </Grid>
