@@ -4,21 +4,18 @@ import Box from '@material-ui/core/Box';
 import { alpha, makeStyles, useTheme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 
-import EditIcon from '@material-ui/icons/Edit';
-import SettingsIcon from '@material-ui/icons/Settings';
 import NavBar from './NavBar';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
 
 import TextField from "@material-ui/core/TextField";
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+const axios = require('axios');
 
 const useStyles=makeStyles((theme)=> ({
     grow: {
@@ -107,25 +104,6 @@ function Profile() {
     })
 },[])
 
-var token = JSON.parse(window.localStorage.getItem('profile')).token
-    console.log(token)
-    var title, body, tags, gender;
-    const setTitle = (e)=>{
-        title=e.target.value
-        console.log(title)
-    }
-    const setBody = (e)=>{
-        body=e.target.value
-        console.log(body)
-    }
-    const setTag = (e)=>{
-      tags=e.target.value
-      console.log(tags)
-  }    
-  const setGender = (e)=>{
-    gender=e.target.value
-    console.log(gender)
-}    
 const [totalquestions, setTotalquestions] = useState([])
 
 useEffect(()=>{
@@ -156,27 +134,44 @@ useEffect(()=>{
   })
 },[])
 
+var token = JSON.parse(window.localStorage.getItem('profile')).token
+    //console.log(token)
+    ///var title, body, tags, gender;
+    const [title, setTitle] = React.useState('');
+    const [body, setBody] = React.useState('');
+    const [tag, setTag] = React.useState('');
+    const [gender, setGender] = React.useState('');
+
+    const handleChange1= (event) => {
+  setTitle(event.target.value);
+};
+const handleChange2= (event) => {
+  setBody(event.target.value);
+};
+const handleChange3= (event) => {
+  setTag(event.target.value);
+};
+const handleChange4= (event) => {
+  setGender(event.target.value);
+};
+
 const handleSubmit = (e)=>{
-        fetch(`http://localhost:5050/users/${user_id}/editprofile`,{
-            method:'PATCH',
-            headers:{"Content-type":"application/json",
-                     "x-access-token":token},
-            body:JSON.stringify({"displayName":title,
-                                  "username":body,
-                                  "SocialLink":tags,
-                                  "gender":gender})
-            })
-            .then(res=>(res.json()))   
-            .then(data=>{
-                console.log(data)
-            })
-            .then(()=>
-            alert("User Profile Edited Successfully")) 
-    }
-    const [age, setAge] = React.useState("");
-    const handleChanges= (event) => {
-      setAge(event.target.value);
-    };
+  axios({
+    method: 'patch',
+    url: `http://localhost:5050/users/${user_id}/editprofile`,
+    //headers: {'x-access-token': token},
+    data: {
+      "displayName":title,
+      "username":body,
+      "SocialLink":tag,
+      "gender":gender
+    }  
+  })
+  .then(function (response) {
+    console.log(response)
+  });
+  window.location.reload()
+}
 
     return (
         <>
@@ -187,7 +182,7 @@ const handleSubmit = (e)=>{
                 <a href='/profile' style={{ textDecoration: 'None' }}>
                     Name: <b>{data.displayName}</b> <br />
                     username: <b>{data.username}</b> <br />
-                    Joined: <b>{data.creationDate}</b><br />
+                    Joined: <b>{data.CreationDate}</b><br />
                     Gender: <b>{data.gender}</b><br />
                     LastLogin: <b>{data.LastLogin}</b><br />
                     </a>
@@ -204,17 +199,17 @@ const handleSubmit = (e)=>{
             </Paper>
         </Grid>
         <Grid item xs={5}>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper1}>
           Answers<br></br>{totalanswers}
           </Paper>
         </Grid>
         <Grid item xs={5}>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper1}>
           Comments<br></br>{totalcomments}
           </Paper>
         </Grid>
         <Grid item xs={5}>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper1}>
           Score<br></br>{data.grade}
           </Paper>
         </Grid>
@@ -244,19 +239,19 @@ const handleSubmit = (e)=>{
               <Typography gutterBottom variant="h6" component="h5" color ="#000">
                 Display Name:
               </Typography>
-              <TextField id="outlined-search" label="Display Name" type="search" variant="outlined" defaultValue={JSON.parse(window.localStorage.getItem('profile')).displayName} onChange={setTitle}/>
+              <TextField id="outlined-search" label="Display Name" type="search" variant="outlined" defaultValue={data.displayName} onChange={handleChange1}/>
               </div>
               <div>
               <Typography gutterBottom variant="h6" component="h5" color ="#000">
                 User Name:
               </Typography>
-              <TextField id="outlined-search" label="User Name/ Email" type="search" variant="outlined" defaultValue={JSON.parse(window.localStorage.getItem('profile')).username} onChange={setBody}/>
+              <TextField id="outlined-search" label="User Name/ Email" type="search" variant="outlined" defaultValue={data.username} onChange={handleChange2}/>
               </div>
               <div>
               <Typography gutterBottom variant="h6" component="h5" color ="#000">
                 Social Link:
               </Typography>
-              <TextField id="outlined-search" label="Social Link" type="search" variant="outlined" defaultValue={JSON.parse(window.localStorage.getItem('profile')).SocialLink} onChange={setTag}/>
+              <TextField id="outlined-search" label="Social Link" type="search" variant="outlined" defaultValue={data.SocialLink} onChange={handleChange3}/>
               </div>
               <div>
               <Typography gutterBottom variant="h6" component="h5" color ="#000" onChange={setGender}>
@@ -268,15 +263,15 @@ const handleSubmit = (e)=>{
         <Select
           labelId="demo-simple-select-outlined-label"
           id="demo-simple-select-outlined"
-          value={age}
-          onChange={handleChanges}
+          value={gender}
+          onChange={handleChange4}
           label="Gender"
         >
-          <MenuItem value="">
+          <MenuItem>
           </MenuItem>
-          <MenuItem value={10}>Male</MenuItem>
-          <MenuItem value={20}>Female</MenuItem>
-          <MenuItem value={30}>None</MenuItem>
+          <MenuItem value='Male'>Male</MenuItem>
+          <MenuItem value='Female'>Female</MenuItem>
+          <MenuItem value='None'>None</MenuItem>
         </Select>
       </FormControl>
               {/* </div>
