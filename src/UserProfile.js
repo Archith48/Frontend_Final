@@ -209,7 +209,7 @@ useEffect(()=>{
         <>
         <NavBar />
         <div className={classes.roots}><a href='/profile'>
-            <img height='120px' width="120px" src={data.image} alt="ProfileImage" align="center" style={{marginTop:'10px'}} ></img></a>
+            <img height='120px' width="120px" src={data.image} alt="ProfileImage" align="center" style={{marginTop:'10px'}, {marginBotton:'10px'}} ></img></a>
             <Box padding="20px" color="textsecondary">
                 <a href='/profile' style={{ textDecoration: 'None' }}>
                     Name: <b>{data.displayName}</b> <br />
