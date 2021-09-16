@@ -11,8 +11,6 @@ import { Button } from '@material-ui/core';
 import { Paper } from "@material-ui/core";
 import { TextField } from "@material-ui/core";
 import { IconButton } from '@material-ui/core';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import LockIcon from '@material-ui/icons/Lock';
@@ -24,6 +22,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import NavBar from "./NavBar";
 import Header1 from "./Header1";
 import GetComments from "./GetComments";
+import Votting from "./Votting";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -55,40 +54,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-if(localStorage.getItem('profile')){
-    var token = JSON.parse(window.localStorage.getItem('profile')).accessToken
-    console.log(token)
-  }
-
 function ListItemLink(props) {
     return <ListItem button component="a" {...props} />;
-}
-
-function Votting(props) {
-    return (
-        <div>
-            <Box>
-            <Grid item xs={12}>
-            <ExpandLessIcon fontSize="medium" align="center"/>
-            </Grid>
-            <Grid item xs={12}>
-            <Typography gutterBottom varriant="h6" align="center" color="#000"> {props.score} </Typography>
-            </Grid>
-            <Grid item xs={12}>
-            <ExpandMoreIcon fontSize="medium"/>
-            </Grid>
-            </Box>
-        </div>
-    )
 }
 
 function Question(){
 
     var answerToPost, commentToPost, p_id;
     if(window.localStorage.getItem('profile')!=null){
-        var token = JSON.parse(window.localStorage.getItem('profile')).accessToken
+        var token = JSON.parse(window.localStorage.getItem('profile')).token
         console.log(token)
-        var user_id = JSON.parse(window.localStorage.getItem('profile')).user_id
+        var user_id = JSON.parse(window.localStorage.getItem('profile')).Id
     }
 
     const classes=useStyles()
@@ -104,6 +80,11 @@ function Question(){
         tags = tags.split(',')
     }
     const postAnswer = (e)=>{
+        answerToPost=e.target.value
+        console.log(answerToPost)
+    }
+
+    const editAnswer = (e)=>{
         p_id = Number(e.target.attributes.name.nodeValue)
         answerToPost=e.target.value
     }
@@ -151,6 +132,7 @@ function Question(){
         })
         .then(res=>(res.json()))
         .then(()=>alert("Question Edited"))
+        setTimeout(function(){window.location.reload()}, 1000);
     };
 
     const EditAnswer=(e)=>{
@@ -162,6 +144,7 @@ function Question(){
         })
         .then(res=>(res.json()))
         .then(()=>alert("Answer Edited"))
+        setTimeout(function(){window.location.reload()}, 1000);
     }
 
     const handleDeleteQuestion=(e)=>{
@@ -169,6 +152,7 @@ function Question(){
             method:'POST',
             headers:{"Content-type":"application/json","x-access-token":token}
         })
+        setTimeout(function(){window.location.reload()}, 1000);
     }
 
     const handleCloseQuestion=(e)=>{
@@ -176,6 +160,7 @@ function Question(){
             method:'POST',
             headers:{"Content-type":"application/json","x-access-token":token}
         })
+        setTimeout(function(){window.location.reload()}, 1000);
     }
 
     const handleReopenQuestion=(e)=>{
@@ -183,9 +168,17 @@ function Question(){
             method:'POST',
             headers:{"Content-type":"application/json","x-access-token":token}
         })
+        setTimeout(function(){window.location.reload()}, 1000);
     }
 
-    const handleDeleteAnswer=(e)=>{}
+    const handleDeleteAnswer=(e)=>{
+        console.log(e)
+        p_id = Number(e.target.attributes.name.nodeValue)
+        fetch(`http://localhost:8088/answers/${p_id}/delete`,{
+        method:'DELETE',
+        headers:{"Content-type":"application/json","x-access-token":token}})
+        .then(()=>alert("Answer Deleted"))
+    }
 
     var questions
     const [similarQ,setSimilarQ]=useState([]);
@@ -236,7 +229,7 @@ function Question(){
                     <Grid item xs={11}>
                     <Paper className={classes.paper}>
                         <Typography variant="body1" gutterBottom>{question.Body}</Typography>
-                        {user_id==question.OwnerUserId && 
+                        {user_id==question.OwnerUserId &&
                         (
                             <div>
                             <IconButton onClick={handleClickOpenEditQuestion}>
@@ -300,7 +293,7 @@ function Question(){
                         </Grid>
                         <Grid item xs={11}>
                         <Paper className={classes.paper}>
-                            <Typography variant="body1" gutterBottom>{answerText.Body}</Typography>
+                            <Typography variant="body1" gutterBottom align="justify">{answerText.Body}</Typography>
                             {user_id==answerText.OwnerUserId && (
                                 <div>
                                 <IconButton onClick={handleClickOpenEditAnswer}>
@@ -314,7 +307,7 @@ function Question(){
                                     >
                                         <DialogTitle id="form-dialog-title">Edit Answer</DialogTitle>
                                         <DialogContent>
-                                        <TextField id="outlined-basic" name={answerText.Id} required margin="dense" label="Answer" defaultValue={answerText.Body} type="text" fullWidth onChange={postAnswer}/>
+                                        <TextField id="outlined-basic" name={answerText.Id} required margin="dense" label="Answer" defaultValue={answerText.Body} type="text" fullWidth onChange={editAnswer}/>
                                         </DialogContent>
                                         <DialogActions>
                                         <Button onClick={handleCloseEditAnswer} color="primary">
@@ -325,7 +318,7 @@ function Question(){
                                         </Button>
                                         </DialogActions>
                                     </Dialog>
-                                <IconButton onClick={handleDeleteQuestion}>
+                                <IconButton onClick={handleDeleteAnswer} name={answerText.Id}>
                                     <DeleteIcon fontSize="small"/>
                                 </IconButton>
                                 </div>

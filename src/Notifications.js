@@ -20,18 +20,21 @@ const useStyles = makeStyles((theme) => ({
 
 function Notifications(){
     const classes = useStyles();
-    var u_id = 7
+    if(window.localStorage.getItem('profile')!=null){
+        var token = JSON.parse(window.localStorage.getItem('profile')).token
+    }
+    var user_id = "114390454203632818929"
     const [notification,setNotification]=useState([]);
     useEffect(()=>{
-        fetch (`http://localhost:8083/User/${u_id}/notifs`,{
+        fetch (`http://localhost:8083/User/${user_id}/notifs`,{
         method:"GET",
         headers:{"Content-type":"application/json",
-                     "x-access-token":"kar"},
+                     "x-access-token":token},
         })
         .then(res=>res.json())
-        .then(data=>{setNotification(data)})
+        .then(data=>{console.log(data)
+            setNotification(data);var len = data.length;localStorage.setItem("length",len)})
     },[])
-    console.log(notification)
     return(
         <div>
             <List>

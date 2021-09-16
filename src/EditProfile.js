@@ -159,7 +159,7 @@ const handleSubmit = (e)=>{
   axios({
     method: 'patch',
     url: `http://localhost:5050/users/${user_id}/editprofile`,
-    headers: {'x-access-token': String(token)},
+    // headers: {'x-access-token': String(token)},
     data: {
       "displayName":(title==='')?data.displayName:title,
       "username":(body==='')?data.username:body,
@@ -170,7 +170,7 @@ const handleSubmit = (e)=>{
   .then(function (response) {
     console.log(response)
   });
-  setTimeout(function(){window.location.reload()}, 1000);
+  setTimeout(function(){window.location.reload()}, 2000);
   //window.location.reload()
 }
 

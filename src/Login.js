@@ -81,6 +81,7 @@ function Login() {
       localStorage.setItem("profile", JSON.stringify(response.data))
       history.push('/')
       console.log(JSON.parse(window.localStorage.getItem('profile')).Id);
+      console.log(JSON.parse(window.localStorage.getItem('profile')));
       window.location.reload()
       //console.log(response.data)
       //history.push(JSON.parse(localStorage.getItem("path").path))

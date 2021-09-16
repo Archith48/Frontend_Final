@@ -171,8 +171,7 @@ function NavBar() {
           </IconButton>
           <a href='/'><img height='40px' width="40px" src={pic} align="center" ></img></a>
           <Box padding="2px" color="#000">
-            <a href='/home' style={{textDecoration:'None'}}><b>Skill Enhancement</b> <br />
-            Portal</a>
+            <a href='/home' style={{textDecoration:'None'}}><b>TELSTACK</b> <br /></a>
           </Box>
           <PopupState>
           {(popupState) => (

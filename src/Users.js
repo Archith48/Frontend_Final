@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Box from '@material-ui/core/Box';
 import { alpha, makeStyles, useTheme } from '@material-ui/core/styles';
 import { DataGrid } from '@mui/x-data-grid';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';

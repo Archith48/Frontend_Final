@@ -45,7 +45,7 @@ function NavBarChanges(props){
       return(
         <div>
           <IconButton aria-label="show 17 new notifications" color="#000" onClick={handleClick}>
-            <Badge badgeContent={17} color="secondary">
+            <Badge badgeContent={window.localStorage.getItem('length')} color="secondary">
               <NotificationsIcon />
             </Badge>
           </IconButton>

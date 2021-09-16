@@ -17,7 +17,7 @@ import UserProfile from './UserProfile';
 import Server from './Server';
 
 function App() {
-  document.title = "Skill Enhancment Portal"
+  document.title = "TELSTACK"
   return (   
     <div>
       <Router>

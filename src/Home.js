@@ -20,8 +20,8 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 700,
   },
   image: {
-    width: 128,
-    height: 128,
+    width: 100,
+    height: 100,
   },
   img: {
     margin: 'auto',
@@ -31,7 +31,8 @@ const useStyles = makeStyles((theme) => ({
   },
   typography: {
     flexGrow: 1,
-    textAlign: "justify"
+    textAlign: "justify",
+    marginTop: theme.spacing(2)
   }
 }));
 
@@ -52,10 +53,9 @@ function Home() {
           </Grid>
           <Grid item xs={12} sm container>
             <Grid item xs container direction="column" spacing={2}>
-              <Grid item xs>
-                <Typography gutterBottom variant="h3" >
-                  <b>Skill Enhancement</b><br/>
-                  Portal
+              <Grid item xs justifyContent="center">
+                <Typography gutterBottom variant="h3" className={classes.typography}>
+                  <b>TELSTACK</b><br/>
                 </Typography>
               </Grid>
             </Grid>
@@ -68,7 +68,7 @@ function Home() {
       <Paper className={classes.paper}>
           <Grid>
               <Typography className={classes.typography}>
-                <b>Telsta Skill Enhance Portal</b> is an internal question and answer site for professional and enthusiast telstra coders. It's planned to build to interweave the training outcome as part of the skill network of Q&A sites. A lot of content is present in form of stack overflow questions and answers, various studies point that developers face problems while development life cycles and they ask questions on stack overflow which gets answered by fellow developers across the globe. 
+                <b>TELSTACK</b> is an internal question and answer site for professional and enthusiast telstra coders. It's planned to build to interweave the training outcome as part of the skill network of Q&A sites. A lot of content is present in form of stack overflow questions and answers, various studies point that developers face problems while development life cycles and they ask questions on stack overflow which gets answered by fellow developers across the globe. 
                 <br />
                 In order for a new developer to understand a concept or solve an issue, it is very difficult to identify the problems. It involves domain experts in form of experienced software developers. The information present is overwhelming and at times can be too much to handle for a budding developer
           </Typography>

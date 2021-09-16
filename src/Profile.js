@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory, useLocation } from "react-router-dom";
+//import { Alert, AlertTitle } from '@material-ui/lab';
 import { Button, Divider } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { alpha, makeStyles, useTheme } from '@material-ui/core/styles';
@@ -15,6 +17,14 @@ import Fab from '@material-ui/core/Fab';
 import EditIcon from '@material-ui/icons/Edit';
 import SettingsIcon from '@material-ui/icons/Settings';
 import NavBar from './NavBar';
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Draggable from 'react-draggable';
+const axios = require('axios');
 
 const useStyles=makeStyles((theme)=> ({
     grow: {
@@ -140,6 +150,7 @@ function Profile() {
 
     //const user_id="106054907602357766738";
     const user_id = JSON.parse(window.localStorage.getItem('profile')).Id;
+    var token = JSON.parse(window.localStorage.getItem('profile')).token
     
     //const [id, setid] = useState(2)
     const [data, setData] = useState([])
@@ -214,7 +225,40 @@ useEffect(()=>{
   })
 },[])
 
+const [opens, setOpens] = React.useState(false);
 
+const handleClickOpen = () => {
+  setOpens(true);
+};
+
+const handleClosed = () => {
+  setOpens(false);
+};
+
+function PaperComponent(props) {
+  return (
+    <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
+      <Paper {...props} />
+    </Draggable>
+  );
+}
+const handleDeleteProfile = () => {
+  axios({
+    method: "DELETE",
+    url: `http://localhost:5050/users/${user_id}/delete`,
+    //headers: {'x-access-token': String(token)},
+  })
+  .then(response => {
+    console.log(response);
+    localStorage.clear()
+    //history.push('/')
+    window.location.reload()
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
+};
 
     return (
         <>
@@ -266,11 +310,40 @@ useEffect(()=>{
             <Fab variant="extended" color="textsecondary" aria-label="edit" className={classes.extendedIcon} href='/profile/edit'>
                 <EditIcon /> Edit Profile
             </Fab>
-            <Fab variant="extended" color="textsecondary" aria-label="settings" className={classes.extendedIcon}>
-                <SettingsIcon />Settings
+            <Fab variant="extended" color="textsecondary" aria-label="settings" className={classes.extendedIcon} onClick={handleClickOpen}>
+                <SettingsIcon />Profile Settings
             </Fab>
-        </div>
+      <Dialog
+        open={opens}
+        onClose={handleClosed}
+        PaperComponent={PaperComponent}
+        aria-labelledby="draggable-dialog-title"
+      >
+        <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+        Delete Profile
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+          Hello {JSON.parse(window.localStorage.getItem('profile')).displayName}! Do you really want to delete your profile?. 
+          You wont have access to your posts anymore. 
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleClosed} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteProfile} color="primary">
+            Delete
+          </Button>
+{/*           <Alert severity="info">
+        <AlertTitle>Info</AlertTitle>
+        This is an info alert — <strong>check it out!</strong>
+      </Alert>
+ */}
+        </DialogActions>
+      </Dialog>
 
+        </div>
 
             <Divider />
         </div>
